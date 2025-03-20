@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            margin: 0 auto;
+            width: 50%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+        .player-hand {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+        .card {
+            width: 100px;
+            height: 140px;
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+        }
+        .score {
+            text-align: right;
+            padding-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Diamonds Game</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Cards</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Player 1</td>
+                <td class="player-hand">
+                    <div class="card" id="card-1"></div>
+                    <div class="card" id="card-2"></div>
+                    <div class="card" id="card-3"></div>
+                    <div class="card" id="card-4"></div>
+                </td>
+                <td class="score">0</td>
+            </tr>
+            <tr>
+                <td>Player 2</td>
+                <td class="player-hand">
+                    <div class="card" id="card-5"></div>
+                    <div class="card" id="card-6"></div>
+                    <div class="card" id="card-7"></div>
+                    <div class="card" id="card-8"></div>
+                </td>
+                <td class="score">0</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="diamond-card" id="diamond-card"></div>
+    <button onclick="nextTurn()">Next Turn</button>
+    <script>
+        // Initialize the game state
+        const players = [
+            { hand: [null, null, null, null], score: 0 },
+            { hand: [null, null, null, null], score: 0 }
+        ];
+        let diamondCard = null;
+        let currentPlayer = 0;
+
+        // Initialize the UI
+        const cardElements = [
+            document.getElementById("card-1"),
+            document.getElementById("card-2"),
+            document.getElementById("card-3"),
+            document.getElementById("card-4"),
+            document.getElementById("card-5"),
+            document.getElementById("card-6"),
+            document.getElementById("card-7"),
+            document.getElementById("card-8"),
+        ];
+        const diamondCardElement = document.getElementById("diamond-card");
+        updateUI();
+
+        // Function to update the UI
+        function updateUI() {
+            for (let i = 0; i < players.length; i++) {
+                for (let j = 0; j < players[i].hand.length; j++) {
+                    if (players[i].hand[j]) {
+                        cardElements[2*i + j].textContent = players[i].hand[j];
+                    } else {
+                        cardElements[2*i + j].textContent = "";
+                    }
+                }
+                document.getElementsByClassName("score")[i].textContent = players[i].score;
+            }
+            if (diamondCard) {
+                diamondCardElement.textContent = diamondCard;
+            } else {
+                diamondCardElement.textContent = "";
+            }
+        }
+
+        // Function to deal the cards to theplayers
+        function dealCards() {
+            const suits = ["hearts", "spades", "clubs"];
+            for (let i = 0; i < players.length; i++) {
+                for (let j = 0; j < players[i].hand.length; j++) {
+                    players[i].hand[j] = suits[j % 3][Math.floor(Math.random() * 13)];
+                }
+            }
+        }
+
+        // Function to deal the diamond card and start the game
+        function startGame() {
+            dealCards();
+            diamondCard = getRandomDiamondCard();
+            updateUI();
+        }
+
+        // Function to get a random diamond card
+        function getRandomDiamondCard() {
+            const diamonds = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"];
+            return diamonds[Math.floor(Math.random() * diamonds.length)];
+        }
+
+        // Function to handle a player's bid
+        function makeBid() {
+            // Find the highest card in the current player's hand
+            let highestCard = null;
+            for (let i = 0; i < players[currentPlayer].hand.length; i++) {
+                if (players[currentPlayer].hand[i]) {
+                    if (!highestCard || players[currentPlayer].hand[i] > highestCard) {
+                        highestCard = players[currentPlayer].hand[i];
+                    }
+                }
+            }
+
+            // Make the bid
+            if (highestCard) {
+                // Find the index of the highest card in the player's hand
+                const index = players[currentPlayer].hand.findIndex(card => card === highestCard);
+
+                // Remove the highest card from the player's hand
+                players[currentPlayer].hand.splice(index, 1);
+
+                // Add the diamond card to the player's score
+                players[currentPlayer].score += getPointValue(diamondCard);
+
+                // Update the UI
+                updateUI();
+
+                // Go to the next player
+                currentPlayer = (currentPlayer + 1) % players.length;
+
+                // Check if the game is over
+                if (players[currentPlayer].hand.every(card => !card)) {
+                    // Find the winner
+                    const winner = players.find(player => player.score > 0);
+                    alert(`The winner is ${winner.score} with a score of ${winner.score}`);
+
+                    // Reset the game
+                    players[0].score = 0;
+                    players[1].score = 0;
+                    startGame();
+                } else {
+                    // Deal the next diamond card
+                    diamondCard = getRandomDiamondCard();
+                }
+            }
+        }
+
+        // Function to get the point value of a card
+        function getPointValue(card) {
+            switch (card) {
+                case "2":
+                    return 2;
+                case "3":
+                    return 3;
+                case "4":
+                    return 4;
+                case "5":
+                    return 5;
+                case "6":
+                    return 6;
+                case "7":
+                    return 7;
+                case "8":
+                    return 8;
+                case "9":
+                    return 9;
+                case "T":
+                    return 10;
+                case "J":
+                    return 11;
+                case "Q":
+                    return 12;
+                case "K":
+                    return 13;
+                case "A":
+                    return 14;
+            }
+        }
+
+        // Function to handle the next turn
+        function nextTurn() {
+            makeBid();
+        }
+
+        // Start the game
+        startGame();
+    </script>
+</body>
+</html>

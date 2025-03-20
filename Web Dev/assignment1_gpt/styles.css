@@ -1,0 +1,82 @@
+/* General Wikipedia-style layout */
+body {
+    font-family: "Linux Libertine", "Georgia", serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    line-height: 1.6;
+}
+
+#content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.firstHeading {
+    font-size: 2em;
+    margin-bottom: 0.2em;
+}
+
+#siteSub {
+    color: #555;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+h2 {
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+h3 {
+    margin-top: 15px;
+}
+
+p {
+    margin: 0.5em 0;
+}
+
+/* Table of Contents */
+#toc {
+    background-color: #f9f9f9;
+    border: 1px solid #a2a9b1;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#toc h2 {
+    margin: 0 0 10px;
+}
+
+#toc ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#toc li {
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+#toc a {
+    text-decoration: none;
+    color: #36c;
+}
+
+#toc a:hover {
+    text-decoration: underline;
+}
+
+/* Collapsible sections */
+.content {
+    display: none;
+}
+
+/* Collapsible sections expand with a toggle */
+.content.active {
+    display: block;
+}
